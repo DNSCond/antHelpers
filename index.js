@@ -20,7 +20,7 @@ export function indent_codeblock(string) {
  * @param {string} string - The input string to format as a Markdown quote.
  * @returns {string} A string formatted as a Markdown blockquote.
  */
-function quoteMarkdown(string) {
+export function quoteMarkdown(string) {
     return '> ' + normalize_newlines(string).replace(/\n/g, '\n> ');
 }
 /**
@@ -28,9 +28,9 @@ function quoteMarkdown(string) {
  * Characters escaped include: ~ ` > - \ [ ] ( ) # ^ & * _ ! <
  *
  * @param {string} string - The input string to escape for Markdown.
- * @returns {string} The escaped string, safe for Markdown rendering.
+ * @reexport returns {string} The escaped string, safe for Markdown rendering.
  */
-function markdown_escape(string) {
+export function markdown_escape(string) {
     return normalize_newlines(string).replace(/[~`>\-\\\[\]()#^&*_!<]/g, '\\$&');
 }
 /**
