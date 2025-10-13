@@ -58,3 +58,297 @@ export function jsonEncode(jsonicItem: any, indent: boolean | number = false, re
 export function jsonEncodeIndent(jsonicItem: any, indent: boolean | number = true, replacer?: (this: any, key: string, value: any) => any): string {
     return indent_codeblock(jsonEncode(jsonicItem, indent, replacer));
 }
+
+// CustomError
+export class CustomError<T = unknown> extends Error {
+    detail: T;
+
+    constructor(message: string, detail: T) {
+        super(message);
+        this.detail = detail;
+        this.name = new.target?.name ?? 'CustomError';
+    }
+
+    get [Symbol.toStringTag]() {
+        return this.name;
+    }
+
+    static [Symbol.toStringTag] = "CustomError";
+}
+
+export type EXMAScript_primitive = string | number | null | undefined | bigint | symbol | boolean;
+
+export const EXMAScript = Object.freeze({
+    __proto__: {
+        [Symbol.toStringTag]: 'EXMAScriptInternals',
+    }, toIntegerOrInfinity(n: any): number {
+        n = +n;
+        if (Object.is(n, NaN) || n === 0) {
+            return 0;
+        } else return Math.trunc(n);
+    }, OrdinaryToPrimitive(mixed: any, hint: "string" | "number" = "number"): EXMAScript_primitive {
+        if (!["string", "number"].includes(hint)) throw new TypeError('incorrect hint');
+        if (!isObject(mixed)) return mixed;
+        const methodNames = hint === "string" ? ["toString", "valueOf"] : ["valueOf", "toString"];
+        for (let methodName of methodNames) {
+            if (methodName in mixed) {
+                if (typeof mixed[methodName] === "function") {
+                    const primitive = mixed[methodName]();
+                    if (!isObject(primitive)) return primitive;
+                }
+            }
+        }
+        throw new TypeError('could not convert to Primitive');
+    }, toPrimitive(value: any, hint: "string" | "number" | "default"): EXMAScript_primitive {
+        if (!["string", "number"].includes(hint)) throw new TypeError('incorrect hint');
+        let primitive;
+        if (value === null) return "null";
+        if (typeof value === "object" || typeof value === "function") {
+            if (Symbol.toPrimitive in value && typeof value[Symbol.toPrimitive] === "function") {
+                primitive = value[Symbol.toPrimitive]('string');
+                if (isObject(primitive)) throw new TypeError;
+            } else {
+                primitive = EXMAScript.OrdinaryToPrimitive(value, "string");
+            }
+        } else primitive = value;
+        return primitive;
+    }, toPropertyKey(value: any): string | symbol {
+        const primitive = EXMAScript.toPrimitive(value, "string");
+        if (typeof primitive === "symbol") return primitive;
+        return String(primitive);
+    }, toNumeric(value: any): number | bigint | null {
+        // Handle object conversion
+        value = EXMAScript.toPrimitive(value, "number");
+        if (typeof value === 'bigint') return value;
+        else return +value;
+    }, isNaN(nan: any): boolean {
+        return isNaN(nan);
+    }, webBuiltins: Object.freeze({
+        [Symbol.toStringTag]: 'WebInternals',
+        TokenList: class TokenList {
+            #tokens: Set<string>;
+
+            constructor(array: string[]) {
+                this.#tokens = new Set(Array.from(array, s => `${s}`));
+            }
+
+            [Symbol.toStringTag] = 'TokenList';
+
+            toString(): string {
+                return Array.prototype.join.call(Array.from(this.#tokens.keys()), ' ');
+            }
+
+            add(...tokens: string[]) {
+                Array.from(tokens).forEach(s => this.#tokens.add(this._validateToken(s)));
+            }
+
+            contains(token: string) {
+                return this.#tokens.has(token);
+            }
+
+            remove(...tokens: string[]) {
+                Array.from(tokens).forEach(s => this.#tokens.delete(this._validateToken(s)));
+            }
+
+            toggle(token: string, force: undefined | boolean = undefined) {
+                token = this._validateToken(token);
+                if (this.contains(token)) {
+                    if (force === false || force === undefined) {
+                        this.remove(token);
+                        return false;
+                    }
+                    if (force) {
+                        this.add(token);
+                        return true;
+                    }
+                }
+            }
+
+            _validateToken(token: string) {
+                token = `${token}`;
+                if (token === '') {
+                    throw new EXMAScript.webBuiltins.SyntaxError('token is empty');
+                } else if (/\s+/.test(token)) {
+                    throw new EXMAScript.webBuiltins.InvalidCharacterError('token is contains whitespace');
+                }
+                return token;
+            }
+
+            replace(oldToken: string, newToken: string) {
+                oldToken = this._validateToken(oldToken);
+                newToken = this._validateToken(newToken);
+                if (this.contains(oldToken)) {
+                    this.remove(oldToken);
+                    this.remove(newToken);
+                    return true;
+                }
+                return false;
+            }
+
+            get value() {
+                return this.toString();
+            }
+
+            get length() {
+                return this.#tokens.size;
+            }
+        },
+        SyntaxError: class extends CustomError {
+            constructor(m: string) {
+                super(m, '"SyntaxError" DOMException');
+            }
+        },
+        InvalidCharacterError: class extends CustomError {
+            constructor(m: string) {
+                super(m, '"InvalidCharacterError" DOMException');
+            }
+        },
+    }),
+});
+
+export function ResolveSecondsAfterNow(s: number = 0): Date {
+    return new Date((new Date).setMilliseconds(0) + (+s) * 1000);
+}
+
+/*
+function ResolveSecondsAfterNow(s=0){return new Date((new Date).setMilliseconds(0)+(+s)*1000)}
+*/
+
+export const mkJsonifable = ((Base: any) => class extends Base {
+    toJSON() {
+        const json = super.toJSON?.(...arguments);
+        if (json !== undefined) return json;
+        return `${this}`;
+    }
+});
+
+// assignProperties.ts
+export function assignProperties(to: object, source: object, propertyNames: (string | symbol)[]): object {
+    if (!isObject(to)) throw new TypeError('to isnt an object');
+    for (let properryObj of propertyNames) {
+        const property = EXMAScript.toPropertyKey(properryObj);
+        Reflect.set(to, property, Reflect.get(source, property));
+    }
+    return to;
+}
+
+export function isObject(value: any): boolean {
+    if (value === null) return false;
+    return (typeof value === "object" || typeof value === "function");
+}
+
+export function sortArray<T>(array: T[], key: (element: T, index: number) => T, converter: (element: T, index: number) => T): T[] {
+    return Array.from(array, converter ?? (m => m)).map(value => ({
+        value, key: +Function.prototype.apply.call(key, value),
+    })).sort((a, b) => a.key - b.key).map(({value}) => value);
+}
+
+export function getProperty(on: object, properties: (string | symbol)[]): unknown {
+    const array = Array.from(properties, EXMAScript.toPropertyKey);
+    if (!isObject(on)) throw new TypeError;
+    let self = on;
+    for (let property of array) {
+        self = on;
+        on = Reflect.get(on, property);
+        if (on === null || on === undefined) {
+            const element = {result: undefined, self};
+            throw new CustomError(`couldnt read properties on (${on}) reading (${String(property)})`, element);
+        }
+    }
+    const result = on;
+    return {result, self};
+}// the result is the property, the self is the (this) value.
+
+export function allKeys(object: object): (string | symbol)[] {
+    object = Object(object);
+    const result = Reflect.ownKeys(object);
+    while (object = Object.getPrototypeOf(object)) {
+        result.push(...Reflect.ownKeys(object));
+    }
+    return [...(new Set(result))];
+}
+
+export function isSafeIntegerRange(n: bigint | number): boolean {
+    n = -(-n) as bigint | number;
+    if (typeof n === "bigint") {
+        return n > Number.MIN_SAFE_INTEGER && n < Number.MAX_SAFE_INTEGER;
+    } else return Number.isSafeInteger(n);
+}
+
+export function NumericAbs(n: bigint | number): bigint | number {
+    n = -n as bigint | number;
+    if (n < 0) return -n;
+    return n;
+}
+
+export function getObjectType(o: any) {
+    const s = Object.prototype.toString.call(o);
+    return s.slice("[object ".length, -1);
+}
+
+export function countBooleansAndNullishItems(array: any[]): { true: number, false: number, nullish: number } {
+    array = Array.from(array ?? [], b => (b === null || b === undefined) ? null : Boolean(b));
+    const result = {true: 0, false: 0, nullish: 0};
+    for (let e of array) {
+        if (e === null) result.nullish += 1;
+        else if (e) result.true += 1;
+        else result.false += 1;
+    }
+    return result;
+}
+
+export function removeDuplications<T>(array: T[]): T[] {
+    const dupe = Symbol("dupelication"), dupes = new Set;
+    return Array.from(array, function (m) {
+        if (dupes.has(m)) return dupe;
+        dupes.add(m);
+        return m;
+    }).filter(m => m !== dupe) as T[];
+}
+
+export function startOfDay(date: Date | number | string): number {
+    return (new Date(date ?? Date.now())).setHours(0, 0, 0, 0);
+}
+
+export function startOfDayUTC(date: Date | number | string): number {
+    return (new Date(date ?? Date.now())).setUTCHours(0, 0, 0, 0);
+}
+
+export class CounterItems<T> {
+    #items: Map<T, number> = new Map<T, number>;
+    [Symbol.toStringTag] = 'CounterItems';
+
+    add(object: T) {
+        if (!this.#items.has(object)) {
+            !this.#items.set(object, 0);
+        }
+        this.#items.set(object, this.#items.get(object)! + 1);
+        return this;
+    }
+
+    set0(object: T) {
+        if (!this.#items.has(object)) {
+            !this.#items.set(object, 0);
+        }
+        return this;
+    }
+
+    get(object: T) {
+        return Number(this.#items.get(object));
+    }
+
+    toJSON() {
+        const obj: any = {__proto__: null};
+        for (const [key, value] of this.#items) {
+            if (typeof key === 'string') {
+                obj[key] = value;
+            }
+        }
+        return obj;
+    }
+
+    clear() {
+        this.#items.clear();
+        return this;
+    }
+}

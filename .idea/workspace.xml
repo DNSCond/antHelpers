@@ -5,9 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cbb82d94-0dbd-445b-8adb-15f10cc25fd5" name="Changes" comment="git add ,">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Random.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Random.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/deepEquals.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/deepEquals.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/parseBigInt.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/parseBigInt.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/promise.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +31,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -64,6 +75,11 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\var\www\BOTs\antHelpers" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -75,7 +91,18 @@
       <workItem from="1750690125892" duration="677000" />
       <workItem from="1750701696645" duration="1183000" />
       <workItem from="1751299376418" duration="401000" />
-      <workItem from="1751299850777" duration="55000" />
+      <workItem from="1751299850777" duration="165000" />
+      <workItem from="1751300373838" duration="17000" />
+      <workItem from="1757840101515" duration="6954000" />
+      <workItem from="1757922653752" duration="3977000" />
+      <workItem from="1758026845729" duration="60000" />
+      <workItem from="1758153479792" duration="47000" />
+      <workItem from="1758195396963" duration="724000" />
+      <workItem from="1758196639774" duration="11000" />
+      <workItem from="1759948417753" duration="22000" />
+      <workItem from="1760055007271" duration="99000" />
+      <workItem from="1760360991867" duration="6060000" />
+      <workItem from="1760367500301" duration="5155000" />
     </task>
     <task id="LOCAL-00001" summary="git add ,">
       <option name="closed" value="true" />
@@ -93,6 +120,15 @@
     <option name="exactExcludedFiles">
       <list>
         <option value="$PROJECT_DIR$/index.js" />
+        <option value="$PROJECT_DIR$/WebWorkers/PromisedWorker.js" />
+        <option value="$PROJECT_DIR$/WebWorkers/PromisedWorkerInside.js" />
+        <option value="$PROJECT_DIR$/WebWorkers/FetchedWorker.js" />
+        <option value="$PROJECT_DIR$/WebWorkers/CustomError.js" />
+        <option value="$PROJECT_DIR$/WebWorkers/FetchedWorkerWithin.js" />
+        <option value="$PROJECT_DIR$/parseBigInt.js" />
+        <option value="$PROJECT_DIR$/deepEquals.js" />
+        <option value="$PROJECT_DIR$/WebWorkers/FWClass.js" />
+        <option value="$PROJECT_DIR$/Random.js" />
       </list>
     </option>
   </component>

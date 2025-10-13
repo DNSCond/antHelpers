@@ -54,3 +54,284 @@ export function jsonEncode(jsonicItem, indent = false, replacer) {
 export function jsonEncodeIndent(jsonicItem, indent = true, replacer) {
     return indent_codeblock(jsonEncode(jsonicItem, indent, replacer));
 }
+// CustomError
+export class CustomError extends Error {
+    detail;
+    constructor(message, detail) {
+        super(message);
+        this.detail = detail;
+        this.name = new.target?.name ?? 'CustomError';
+    }
+    get [Symbol.toStringTag]() {
+        return this.name;
+    }
+    static [Symbol.toStringTag] = "CustomError";
+}
+export const EXMAScript = Object.freeze({
+    __proto__: {
+        [Symbol.toStringTag]: 'EXMAScriptInternals',
+    }, toIntegerOrInfinity(n) {
+        n = +n;
+        if (Object.is(n, NaN) || n === 0) {
+            return 0;
+        }
+        else
+            return Math.trunc(n);
+    }, OrdinaryToPrimitive(mixed, hint = "number") {
+        if (!["string", "number"].includes(hint))
+            throw new TypeError('incorrect hint');
+        if (!isObject(mixed))
+            return mixed;
+        const methodNames = hint === "string" ? ["toString", "valueOf"] : ["valueOf", "toString"];
+        for (let methodName of methodNames) {
+            if (methodName in mixed) {
+                if (typeof mixed[methodName] === "function") {
+                    const primitive = mixed[methodName]();
+                    if (!isObject(primitive))
+                        return primitive;
+                }
+            }
+        }
+        throw new TypeError('could not convert to Primitive');
+    }, toPrimitive(value, hint) {
+        if (!["string", "number"].includes(hint))
+            throw new TypeError('incorrect hint');
+        let primitive;
+        if (value === null)
+            return "null";
+        if (typeof value === "object" || typeof value === "function") {
+            if (Symbol.toPrimitive in value && typeof value[Symbol.toPrimitive] === "function") {
+                primitive = value[Symbol.toPrimitive]('string');
+                if (isObject(primitive))
+                    throw new TypeError;
+            }
+            else {
+                primitive = EXMAScript.OrdinaryToPrimitive(value, "string");
+            }
+        }
+        else
+            primitive = value;
+        return primitive;
+    }, toPropertyKey(value) {
+        const primitive = EXMAScript.toPrimitive(value, "string");
+        if (typeof primitive === "symbol")
+            return primitive;
+        return String(primitive);
+    }, toNumeric(value) {
+        // Handle object conversion
+        value = EXMAScript.toPrimitive(value, "number");
+        if (typeof value === 'bigint')
+            return value;
+        else
+            return +value;
+    }, isNaN(nan) {
+        return isNaN(nan);
+    }, webBuiltins: Object.freeze({
+        [Symbol.toStringTag]: 'WebInternals',
+        TokenList: class TokenList {
+            #tokens;
+            constructor(array) {
+                this.#tokens = new Set(Array.from(array, s => `${s}`));
+            }
+            [Symbol.toStringTag] = 'TokenList';
+            toString() {
+                return Array.prototype.join.call(Array.from(this.#tokens.keys()), ' ');
+            }
+            add(...tokens) {
+                Array.from(tokens).forEach(s => this.#tokens.add(this._validateToken(s)));
+            }
+            contains(token) {
+                return this.#tokens.has(token);
+            }
+            remove(...tokens) {
+                Array.from(tokens).forEach(s => this.#tokens.delete(this._validateToken(s)));
+            }
+            toggle(token, force = undefined) {
+                token = this._validateToken(token);
+                if (this.contains(token)) {
+                    if (force === false || force === undefined) {
+                        this.remove(token);
+                        return false;
+                    }
+                    if (force) {
+                        this.add(token);
+                        return true;
+                    }
+                }
+            }
+            _validateToken(token) {
+                token = `${token}`;
+                if (token === '') {
+                    throw new EXMAScript.webBuiltins.SyntaxError('token is empty');
+                }
+                else if (/\s+/.test(token)) {
+                    throw new EXMAScript.webBuiltins.InvalidCharacterError('token is contains whitespace');
+                }
+                return token;
+            }
+            replace(oldToken, newToken) {
+                oldToken = this._validateToken(oldToken);
+                newToken = this._validateToken(newToken);
+                if (this.contains(oldToken)) {
+                    this.remove(oldToken);
+                    this.remove(newToken);
+                    return true;
+                }
+                return false;
+            }
+            get value() {
+                return this.toString();
+            }
+            get length() {
+                return this.#tokens.size;
+            }
+        },
+        SyntaxError: class extends CustomError {
+            constructor(m) {
+                super(m, '"SyntaxError" DOMException');
+            }
+        },
+        InvalidCharacterError: class extends CustomError {
+            constructor(m) {
+                super(m, '"InvalidCharacterError" DOMException');
+            }
+        },
+    }),
+});
+export function ResolveSecondsAfterNow(s = 0) {
+    return new Date((new Date).setMilliseconds(0) + (+s) * 1000);
+}
+/*
+function ResolveSecondsAfterNow(s=0){return new Date((new Date).setMilliseconds(0)+(+s)*1000)}
+*/
+export const mkJsonifable = ((Base) => class extends Base {
+    toJSON() {
+        const json = super.toJSON?.(...arguments);
+        if (json !== undefined)
+            return json;
+        return `${this}`;
+    }
+});
+// assignProperties.ts
+export function assignProperties(to, source, propertyNames) {
+    if (!isObject(to))
+        throw new TypeError('to isnt an object');
+    for (let properryObj of propertyNames) {
+        const property = EXMAScript.toPropertyKey(properryObj);
+        Reflect.set(to, property, Reflect.get(source, property));
+    }
+    return to;
+}
+export function isObject(value) {
+    if (value === null)
+        return false;
+    return (typeof value === "object" || typeof value === "function");
+}
+export function sortArray(array, key, converter) {
+    return Array.from(array, converter ?? (m => m)).map(value => ({
+        value, key: +Function.prototype.apply.call(key, value),
+    })).sort((a, b) => a.key - b.key).map(({ value }) => value);
+}
+export function getProperty(on, properties) {
+    const array = Array.from(properties, EXMAScript.toPropertyKey);
+    if (!isObject(on))
+        throw new TypeError;
+    let self = on;
+    for (let property of array) {
+        self = on;
+        on = Reflect.get(on, property);
+        if (on === null || on === undefined) {
+            const element = { result: undefined, self };
+            throw new CustomError(`couldnt read properties on (${on}) reading (${String(property)})`, element);
+        }
+    }
+    const result = on;
+    return { result, self };
+} // the result is the property, the self is the (this) value.
+export function allKeys(object) {
+    object = Object(object);
+    const result = Reflect.ownKeys(object);
+    while (object = Object.getPrototypeOf(object)) {
+        result.push(...Reflect.ownKeys(object));
+    }
+    return [...(new Set(result))];
+}
+export function isSafeIntegerRange(n) {
+    n = -(-n);
+    if (typeof n === "bigint") {
+        return n > Number.MIN_SAFE_INTEGER && n < Number.MAX_SAFE_INTEGER;
+    }
+    else
+        return Number.isSafeInteger(n);
+}
+export function NumericAbs(n) {
+    n = -n;
+    if (n < 0)
+        return -n;
+    return n;
+}
+export function getObjectType(o) {
+    const s = Object.prototype.toString.call(o);
+    return s.slice("[object ".length, -1);
+}
+export function countBooleansAndNullishItems(array) {
+    array = Array.from(array ?? [], b => (b === null || b === undefined) ? null : Boolean(b));
+    const result = { true: 0, false: 0, nullish: 0 };
+    for (let e of array) {
+        if (e === null)
+            result.nullish += 1;
+        else if (e)
+            result.true += 1;
+        else
+            result.false += 1;
+    }
+    return result;
+}
+export function removeDuplications(array) {
+    const dupe = Symbol("dupelication"), dupes = new Set;
+    return Array.from(array, function (m) {
+        if (dupes.has(m))
+            return dupe;
+        dupes.add(m);
+        return m;
+    }).filter(m => m !== dupe);
+}
+export function startOfDay(date) {
+    return (new Date(date ?? Date.now())).setHours(0, 0, 0, 0);
+}
+export function startOfDayUTC(date) {
+    return (new Date(date ?? Date.now())).setUTCHours(0, 0, 0, 0);
+}
+export class CounterItems {
+    #items = new Map;
+    [Symbol.toStringTag] = 'CounterItems';
+    add(object) {
+        if (!this.#items.has(object)) {
+            !this.#items.set(object, 0);
+        }
+        this.#items.set(object, this.#items.get(object) + 1);
+        return this;
+    }
+    set0(object) {
+        if (!this.#items.has(object)) {
+            !this.#items.set(object, 0);
+        }
+        return this;
+    }
+    get(object) {
+        return Number(this.#items.get(object));
+    }
+    toJSON() {
+        const obj = { __proto__: null };
+        for (const [key, value] of this.#items) {
+            if (typeof key === 'string') {
+                obj[key] = value;
+            }
+        }
+        return obj;
+    }
+    clear() {
+        this.#items.clear();
+        return this;
+    }
+}
