@@ -100,13 +100,13 @@ export const EXMAScript = Object.freeze({
         }
         throw new TypeError('could not convert to Primitive');
     }, toPrimitive(value: any, hint: "string" | "number" | "default"): EXMAScript_primitive {
-        if (!["string", "number"].includes(hint)) throw new TypeError('incorrect hint');
+        if (!["string", "number",  "default"].includes(hint)) throw new TypeError('incorrect hint');
         let primitive;
         if (value === null) return "null";
         if (typeof value === "object" || typeof value === "function") {
             if (Symbol.toPrimitive in value && typeof value[Symbol.toPrimitive] === "function") {
-                primitive = value[Symbol.toPrimitive]('string');
-                if (isObject(primitive)) throw new TypeError;
+                primitive = value[Symbol.toPrimitive](hint);
+                if (isObject(primitive)) throw new TypeError('could not convert to primitive');
             } else {
                 primitive = EXMAScript.OrdinaryToPrimitive(value, "string");
             }
@@ -208,6 +208,10 @@ export const EXMAScript = Object.freeze({
 
 export function ResolveSecondsAfterNow(s: number = 0): Date {
     return new Date((new Date).setMilliseconds(0) + (+s) * 1000);
+}
+
+export function ResolveSecondsAfter(s: number = 0, now?: Date | string | number): Date {
+    return new Date((new Date(now ?? Date.now())).setMilliseconds(0) + (+s) * 1000);
 }
 
 /*
@@ -351,4 +355,96 @@ export class CounterItems<T> {
         this.#items.clear();
         return this;
     }
+}
+
+export function printLn(varaibles: any) {
+    const result = [];
+    for (const [keuy, value] of Object.entries(varaibles)) {
+        let variable = String(keuy) + '=';
+        if (value === null) {
+            result.push(`${variable}null`);
+            continue;
+        }
+        switch (typeof value) {
+            case "string":
+            case "symbol":
+                variable += JSON.stringify(String(value));
+                break;
+            case "number":
+                variable += JSON.stringify(value);
+                break;
+            case "bigint":
+                variable += String(value) + 'n';
+                break;
+            case "boolean":
+                variable += JSON.stringify(value);
+                break;
+            case "undefined":
+                variable += "undefined";
+                break;
+            case "object":
+                variable += JSON.stringify(value);
+                break;
+            case "function":
+                variable += JSON.stringify(String(value));
+                break;
+            default:
+                throw new TypeError(`typeof value is not recognized (${typeof value})`);
+        }
+        result.push(variable);
+    }
+    return result.join('; ');
+}
+
+function sliceOut_String(string: string, start?: number, end?: number, strict: boolean = false) {
+    Object.prototype.valueOf.call(string);
+    string = `${string}`;
+    const len = string.length;
+    const intStart = EXMAScript.toIntegerOrInfinity(start);
+    let from;
+    if (strict) {
+        from = intStart;
+    } else {
+        if (intStart === -Infinity) {
+            from = 0;
+        } else if (intStart < 0) {
+            from = Math.max(len + intStart, 0);
+        } else {
+            from = Math.min(intStart, len);
+        }
+    }
+    let intEnd;
+    if (end === undefined) {
+        intEnd = len;
+    } else {
+        intEnd = EXMAScript.toIntegerOrInfinity(end);
+    }
+    let to;
+    if (strict) {
+        to = intEnd;
+    } else {
+        if (intEnd === -Infinity) {
+            to = 0;
+        } else if (intEnd < 0) {
+            to = Math.max(len + intEnd, 0);
+        } else {
+            to = Math.min(intEnd, len);
+        }
+    }
+    if (from >= to) {
+        if (strict) {
+            throw new RangeError(`the normalized value of start (${from}) is greater than the normalized value of end (${to}) in sliceOut_String\'s strict mode`);
+        } else {
+            return "";
+        }
+    }
+    if (strict) {
+        if (from < 0) {
+            throw new RangeError(`start is less than 0 in sliceOut_String\'s strict mode (got ${from})`);
+        }
+        if (to > len) {
+            throw new RangeError(`end is greater than ${len} in sliceOut_String\'s strict mode (got ${to})`);
+        }
+    }
+    return (string.slice(0, from) + string.slice(to));
 }

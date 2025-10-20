@@ -1,4 +1,4 @@
-// javascript.js
+// Random.ts
 import { EXMAScript } from "./index.js";
 export class Random {
     #seed;

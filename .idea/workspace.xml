@@ -5,19 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cbb82d94-0dbd-445b-8adb-15f10cc25fd5" name="Changes" comment="git add ,">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Random.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Random.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deepEquals.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deepEquals.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parseBigInt.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parseBigInt.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/promise.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Random.js" beforeDir="false" afterPath="$PROJECT_DIR$/Random.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/tests.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,6 +95,15 @@
       <workItem from="1760055007271" duration="99000" />
       <workItem from="1760360991867" duration="6060000" />
       <workItem from="1760367500301" duration="5155000" />
+      <workItem from="1760381450117" duration="82000" />
+      <workItem from="1760450025283" duration="307000" />
+      <workItem from="1760465405349" duration="25000" />
+      <workItem from="1760624359056" duration="387000" />
+      <workItem from="1760624846255" duration="78000" />
+      <workItem from="1760692756231" duration="1357000" />
+      <workItem from="1760711965130" duration="19000" />
+      <workItem from="1760790608185" duration="2527000" />
+      <workItem from="1760804107961" duration="81000" />
     </task>
     <task id="LOCAL-00001" summary="git add ,">
       <option name="closed" value="true" />
@@ -119,16 +120,10 @@
     <option name="version" value="3" />
     <option name="exactExcludedFiles">
       <list>
-        <option value="$PROJECT_DIR$/index.js" />
-        <option value="$PROJECT_DIR$/WebWorkers/PromisedWorker.js" />
-        <option value="$PROJECT_DIR$/WebWorkers/PromisedWorkerInside.js" />
-        <option value="$PROJECT_DIR$/WebWorkers/FetchedWorker.js" />
-        <option value="$PROJECT_DIR$/WebWorkers/CustomError.js" />
-        <option value="$PROJECT_DIR$/WebWorkers/FetchedWorkerWithin.js" />
         <option value="$PROJECT_DIR$/parseBigInt.js" />
-        <option value="$PROJECT_DIR$/deepEquals.js" />
-        <option value="$PROJECT_DIR$/WebWorkers/FWClass.js" />
         <option value="$PROJECT_DIR$/Random.js" />
+        <option value="$PROJECT_DIR$/deepEquals.js" />
+        <option value="$PROJECT_DIR$/index.js" />
       </list>
     </option>
   </component>
